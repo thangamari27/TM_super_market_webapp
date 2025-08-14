@@ -1,18 +1,22 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
-const connectDB = require('./config/mongoDB')
+const pool = require('./config/mysqlDB');
 
 //express app and dotenv config
 const app = express();
 dotenv.config();
 
 // db config
-connectDB();
 
 // middleware
 app.use(cors());
 app.use(express.json());
+
+// Routes
+const ProductCatlogRoute = require('./routes/productCatlogRoute')
+
+app.use('/api/product', ProductCatlogRoute);
 
 const port = process.env.PORT || 5000
 // app listen
