@@ -2,37 +2,85 @@ create database supermarket;
 
 use supermarket;
 
--- create table for catlog
-CREATE TABLE product_catlog(
-    id INT PRIMARY KEY AUTO_INCREMENT,
-    product_category VARCHAR(50),
-    product_name VARCHAR(50),
+CREATE TABLE supermarket_users(
+    userid INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password_hash VARCHAR(100) NOT NULL,
+    phoneno VARCHAR(50),
+    roles ENUM('customer', 'admin', 'staff') DEFAULT 'customer',
+    user_address TEXT,
+    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE product_category(
+    category_id INT PRIMARY KEY AUTO_INCREMENT,
+    category_name VARCHAR(100) UNIQUE NOT NULL,
+    category_description TEXT
+);
+
+CREATE TABLE product_items(
+    product_id INT PRIMARY KEY AUTO_INCREMENT,
+    category_id INT NOT NULL,
+    product_name VARCHAR(100),
     product_price DECIMAL(10,2) NOT NULL,
-    product_stock INT NOT NULL DEFAULT 0,
-    create_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    product_status ENUM('active','inActive') DEFAULT 'active',
+    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (category_id) REFERENCES product_category(category_id)
 );
 
-INSERT INTO product_catlog(product_category, product_name, product_price, product_stock)
-VALUES
-('Vegetables', 'Potato', 40.00, 100),
-('Vegetables', 'Tomato', 30.00, 150),
-('Fruits', 'Apple', 120.00, 50),
-('Snacks', 'Chips', 20.00, 200);
+CREATE TABLE product_inventory(
+    inventoryid INT PRIMARY KEY AUTO_INCREMENT,
+    product_id INT NOT NULL,
+    product_quantity INT NOT NULL DEFAULT 0,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
+);
 
--- create the product cart 
-CREATE TABLE product_cart(
+create TABLE product_cart(
     cart_id INT PRIMARY KEY AUTO_INCREMENT,
-    cart_category VARCHAR(50),
-    cart_name VARCHAR(50),
-    cart_price DECIMAL(10,2) NOT NULL,
-    cart_quantity INT NOT NULL,
-    cart_stock INT NOT NULL DEFAULT 0,
-    cart_status ENUM ('pending','reject','success') NOT NULL DEFAULT 'pending',
-    cart_createAs TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    userid INT NOT NULL,
+    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES supermarket_users(userid)
 );
 
-INSERT INTO product_cart(cart_category, cart_name, cart_price, cart_quantity, cart_stock) VALUES 
-('Vegetables', 'Potato', 40.00, 1,100),
-('Vegetables', 'Tomato', 30.00, 2,150),
-('Fruits', 'Apple', 120.00, 3,50),
-('Snacks', 'Chips', 20.00, 4,200);
+CREATE TABLE product_cart_items(
+    cart_items_id INT PRIMARY KEY AUTO_INCREMENT,
+    cart_id INT NOT NULL,
+    product_id INT NOT NULL,
+    product_quantity INT NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (cart_id) REFERENCES product_cart(cart_id),
+    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
+);
+
+CREATE TABLE product_order(
+    order_id INT PRIMARY KEY AUTO_INCREMENT,
+    userid INT NOT NULL,
+    total_amount DECIMAL(10,2) NOT NULL,
+    order_status ENUM('pending','paid','shipped','delivery', 'cancelled') DEFAULT 'pending',
+    payment_status ENUM('unpaid', 'paid', 'refound') DEFAULT 'unpaid',
+    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (userid) REFERENCES supermarket_users(userid)
+);
+
+CREATE TABLE product_order_items(
+    order_item_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    product_id INT NOT NULL,
+    product_quantity INT NOT NULL,
+    product_price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES product_order(order_id),
+    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
+);
+
+CREATE TABLE product_payment(
+    payment_id INT PRIMARY KEY AUTO_INCREMENT,
+    order_id INT NOT NULL,
+    payment_method ENUM('Cash','upi','card','netbanking') NOT NULL,
+    product_amount DECIMAL(10,2) NOT NULL,
+    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    payment_status ENUM('pending','complete','failed') DEFAULT 'pending',
+    FOREIGN KEY (order_id) REFERENCES product_order(order_id)
+);
+
