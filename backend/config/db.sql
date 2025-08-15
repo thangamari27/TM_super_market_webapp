@@ -88,3 +88,21 @@ UPDATE supermarket_users
 Delete from supermarket_users
 where user_id = 1
 
+
+-- get products 
+select * from product_items;
+
+-- get products 
+select * from product_items where item_id = 3;
+
+-- edit products
+UPDATE product_items 
+SET items_name = coalesce('', items_name),
+items_price = coalesce('',stock_price),
+stock_quantity = coalesce('',stock_quantity)
+where items_id = 2;
+
+-- delete product item
+delete from product_items where items_id = 2;
+
+

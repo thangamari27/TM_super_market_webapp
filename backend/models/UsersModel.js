@@ -62,7 +62,7 @@ const editUsers = async(id, editUsersData) =>{
 const deleteUsers = async(id) =>{
     try {
         const [deleteUserRow] = await pool.query(
-            'Delete from supermarket_users where user_id = ?',
+            'delete from supermarket_users where user_id = ?',
             [id]
         );
 

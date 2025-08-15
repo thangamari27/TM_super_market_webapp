@@ -16,9 +16,11 @@ app.use(express.json());
 // Routes
 const getUsersRoute = require('./routes/UsersRoute');
 const getProductRoute = require('./routes/ProductRoute');
+const getOrderRoute = require('./routes/OrderRoute');
 
 app.use('/api/users', getUsersRoute);
 app.use('/api/products', getProductRoute);
+app.use('/api/orders', getOrderRoute);
 
 const port = process.env.PORT || 5000
 // app listen

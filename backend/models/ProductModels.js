@@ -12,6 +12,19 @@ const getProductItems = async()=>{
     }
 };
 
+const getProductById = async(id) =>{
+    try {
+        const [getByIdRow] = await pool.query(
+            'select * from product_items where item_id = ?',
+            [id]
+        );
+
+        return getByIdRow[0];
+    } catch (error) {
+        console.log("Error:",error.message);
+    }
+}
+
 const createProduct = async(createItems) =>{
     try {
         const {item_name, item_price, stock_quantity} = createItems;
@@ -26,9 +39,42 @@ const createProduct = async(createItems) =>{
     }
 };
 
+const editProduct = async(id, editData)=>{
+    try {
+        const {item_name, item_price, stock_quantity} = editData;
+        const [editProductRow] = await pool.query(
+            `UPDATE product_items
+             SET item_name = COALESCE(?, item_name),
+             item_price = COALESCE(?, item_price),
+             stock_quantity = COALESCE(?, stock_quantity)
+             WHERE item_id = ?
+            `,
+            [item_name, item_price, stock_quantity, id]
+        );
+       
+        return editProductRow.affectedRows;
+    } catch (error) {
+        console.log("Error:",error.message);
+    }
+}
 
+const deleteProduct = async(id) =>{
+    try {
+        const [deleteItemRow] = await pool.query(
+            'DELETE FROM product_items WHERE item_id = ?',
+            [id]
+        );
+        console.log(deleteItemRow.affectedRows);
+        return deleteItemRow.affectedRows;
+    } catch (error) {
+        console.log("Error:",error.message);
+    }
+}
 
 module.exports = {
     getProductItems,
-    createProduct
+    getProductById,
+    createProduct,
+    editProduct,
+    deleteProduct
 }
