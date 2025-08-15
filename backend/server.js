@@ -15,8 +15,10 @@ app.use(express.json());
 
 // Routes
 const ProductCatlogRoute = require('./routes/productCatlogRoute')
+const ProductCartRoute = require('./routes/productCartRoute');
 
 app.use('/api/product', ProductCatlogRoute);
+app.use('/api/productcart', ProductCartRoute);
 
 const port = process.env.PORT || 5000
 // app listen

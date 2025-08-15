@@ -14,7 +14,9 @@ const getProductCatlog = async() =>{
 const createProductCatlog = async(products) =>{
     const {product_category, product_name, product_price, product_stock} = products;
     try{
-        const [createRow] =  await pool.query('INSERT INTO product_catlog(product_category, product_name, product_price, product_stock) Values(?, ?, ?, ?)', [product_category, product_name, product_price, product_stock]);
+        const [createRow] =  await pool.query(
+            'INSERT INTO product_catlog(product_category, product_name, product_price, product_stock) Values(?, ?, ?, ?)', 
+            [product_category, product_name, product_price, product_stock]);
         console.log(createRow);
         return createRow.insertId;
     }
