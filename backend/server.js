@@ -14,9 +14,11 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-const getUsersRoute = require('./routes/getUsersRoute');
+const getUsersRoute = require('./routes/UsersRoute');
+const getProductRoute = require('./routes/ProductRoute');
 
 app.use('/api/users', getUsersRoute);
+app.use('/api/products', getProductRoute);
 
 const port = process.env.PORT || 5000
 // app listen

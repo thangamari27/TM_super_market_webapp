@@ -57,6 +57,7 @@ VALUES
 ('Bread', 30.00, 50),
 ('Eggs (dozen)', 80.00, 40);
 
+
 -- Orders
 INSERT INTO orders (user_id, total_amount, order_status)
 VALUES

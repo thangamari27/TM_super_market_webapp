@@ -1,4 +1,4 @@
-const getUsersModel = require('../models/getUsersModel');
+const getUsersModel = require('../models/UsersModel');
 
 const getAllUsersController = async(req, res) =>{
     try {
@@ -30,7 +30,7 @@ const CreateUserController = async(req, res) =>{
 
         const createUserData = await getUsersModel.createUsers({username, email, password_hash, phoneno, roles, user_address});
         if(!username, !email, !password_hash){
-            return res.status(400).json({success:false, error:"manatory fields missed"})
+            return res.status(400).json({success:false, error:"missing fields value"})
         }
         res.status(201).json({success:true, message:"create new user successfully"});
     } catch (error) {
