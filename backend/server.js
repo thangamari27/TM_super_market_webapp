@@ -14,11 +14,9 @@ app.use(cors());
 app.use(express.json());
 
 // Routes
-const ProductCatlogRoute = require('./routes/productCatlogRoute')
-const ProductCartRoute = require('./routes/productCartRoute');
+const getUsersRoute = require('./routes/getUsersRoute');
 
-app.use('/api/product', ProductCatlogRoute);
-app.use('/api/productcart', ProductCartRoute);
+app.use('/api/users', getUsersRoute);
 
 const port = process.env.PORT || 5000
 // app listen

@@ -2,85 +2,88 @@ create database supermarket;
 
 use supermarket;
 
+-- user table
 CREATE TABLE supermarket_users(
-    userid INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT PRIMARY KEY AUTO_INCREMENT,
     username VARCHAR(100) NOT NULL,
     email VARCHAR(100) UNIQUE NOT NULL,
     password_hash VARCHAR(100) NOT NULL,
     phoneno VARCHAR(50),
-    roles ENUM('customer', 'admin', 'staff') DEFAULT 'customer',
+    roles ENUM('customer', 'admin') DEFAULT 'customer',
     user_address TEXT,
     createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE product_category(
-    category_id INT PRIMARY KEY AUTO_INCREMENT,
-    category_name VARCHAR(100) UNIQUE NOT NULL,
-    category_description TEXT
-);
 
+-- items table
 CREATE TABLE product_items(
-    product_id INT PRIMARY KEY AUTO_INCREMENT,
-    category_id INT NOT NULL,
-    product_name VARCHAR(100),
-    product_price DECIMAL(10,2) NOT NULL,
-    product_status ENUM('active','inActive') DEFAULT 'active',
-    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (category_id) REFERENCES product_category(category_id)
+    item_id INT PRIMARY KEY AUTO_INCREMENT,
+    item_name VARCHAR(100) NOT NULL,
+    item_price DECIMAL(10,2) NOT NULL,
+    stock_quantity INT NOT NULL DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE product_inventory(
-    inventoryid INT PRIMARY KEY AUTO_INCREMENT,
-    product_id INT NOT NULL,
-    product_quantity INT NOT NULL DEFAULT 0,
-    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
-);
-
-create TABLE product_cart(
-    cart_id INT PRIMARY KEY AUTO_INCREMENT,
-    userid INT NOT NULL,
-    createAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userid) REFERENCES supermarket_users(userid)
-);
-
-CREATE TABLE product_cart_items(
-    cart_items_id INT PRIMARY KEY AUTO_INCREMENT,
-    cart_id INT NOT NULL,
-    product_id INT NOT NULL,
-    product_quantity INT NOT NULL,
-    product_price DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (cart_id) REFERENCES product_cart(cart_id),
-    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
-);
-
-CREATE TABLE product_order(
+-- order table 
+CREATE TABLE orders (
     order_id INT PRIMARY KEY AUTO_INCREMENT,
-    userid INT NOT NULL,
+    user_id INT NOT NULL,
     total_amount DECIMAL(10,2) NOT NULL,
-    order_status ENUM('pending','paid','shipped','delivery', 'cancelled') DEFAULT 'pending',
-    payment_status ENUM('unpaid', 'paid', 'refound') DEFAULT 'unpaid',
-    order_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (userid) REFERENCES supermarket_users(userid)
+    order_status ENUM('pending','paid','shipped','delivered','cancelled') DEFAULT 'pending',
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES supermarket_users(user_id)
 );
 
-CREATE TABLE product_order_items(
+-- order items
+CREATE TABLE order_items(
     order_item_id INT PRIMARY KEY AUTO_INCREMENT,
     order_id INT NOT NULL,
-    product_id INT NOT NULL,
-    product_quantity INT NOT NULL,
-    product_price DECIMAL(10,2) NOT NULL,
-    FOREIGN KEY (order_id) REFERENCES product_order(order_id),
-    FOREIGN KEY (product_id) REFERENCES product_items(product_id)
+    item_id INT NOT NULL,
+    quantity INT NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    FOREIGN KEY (order_id) REFERENCES orders(order_id),
+    FOREIGN KEY (item_id) REFERENCES product_items(item_id)
 );
 
-CREATE TABLE product_payment(
-    payment_id INT PRIMARY KEY AUTO_INCREMENT,
-    order_id INT NOT NULL,
-    payment_method ENUM('Cash','upi','card','netbanking') NOT NULL,
-    product_amount DECIMAL(10,2) NOT NULL,
-    payment_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    payment_status ENUM('pending','complete','failed') DEFAULT 'pending',
-    FOREIGN KEY (order_id) REFERENCES product_order(order_id)
-);
+INSERT INTO supermarket_users (username, email, password_hash, phoneno, roles)
+VALUES 
+('tmjk', 'tmjk220@gmail.com', 'tmjk2710', '9876543210', 'customer'),
+('tm', 'admin123@gmail.com', 'admin@123', '9876543211', 'admin');
+
+-- Items
+INSERT INTO product_items (item_name, item_price, stock_quantity)
+VALUES
+('Milk 1L', 50.00, 100),
+('Bread', 30.00, 50),
+('Eggs (dozen)', 80.00, 40);
+
+-- Orders
+INSERT INTO orders (user_id, total_amount, order_status)
+VALUES
+(1, 130.00, 'pending');
+
+-- Order Items
+INSERT INTO order_items (order_id, item_id, quantity, price)
+VALUES
+(1, 1, 1, 50.00), 
+(1, 2, 1, 30.00), 
+(1, 3, 1, 50.00); 
+
+-- get all users
+select * from supermarket_users;
+
+-- get specific user
+select * from supermarket_users where user_id = 1;
+
+-- edit user
+UPDATE supermarket_users 
+             SET username = COALESCE('', username), 
+             email = COALESCE('', email), 
+             phoneno = COALESCE('', phoneno),  
+             user_address = COALESCE('', user_address) 
+             WHERE user_id = ''
+
+-- Delete users
+Delete from supermarket_users
+where user_id = 1
 
