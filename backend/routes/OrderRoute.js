@@ -5,7 +5,9 @@ const router = express.Router();
 
 router.get('/', OrderController.getOrderController);
 router.get('/:id', OrderController.getOrderByIdController);
-router.put('/', OrderController.addOrderController);
+router.post('/', OrderController.addOrderController);
+router.put('/:id', OrderController.editOrderStatusController);
+router.delete('/:id', OrderController.deleteOrderController);
 
 
 module.exports = router;

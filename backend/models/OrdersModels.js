@@ -24,15 +24,16 @@ const getOrdersById = async(id) =>{
 
 const createOrder = async(user_id, items)=>{
     try {
-        const total_amount = 0;
+        let total_amount = 0;
         items.forEach(item => {
             total_amount += item.price * item.quantity;
         });
 
         const [createOrderRow] = await pool.query(
-            'INSERT INTO orders (user_id, total_amount, order_status) VALUES (?, ?, pending)',
+            `INSERT INTO orders (user_id, total_amount, order_status) VALUES (?, ?, 'pending')`,
             [user_id, total_amount]
         );
+        console.log(createOrderRow);
 
         const order_id = createOrderRow.insertId;
 
@@ -42,8 +43,8 @@ const createOrder = async(user_id, items)=>{
                 [order_id, item.item_id, item.quantity, item.price]
             );
         }
-
-        return order_id;
+                
+          return order_id;
     } catch (error) {
         console.log("Error:", error.message);
     }
