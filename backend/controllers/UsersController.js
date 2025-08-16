@@ -4,11 +4,11 @@ const getAllUsersController = async(req, res) =>{
     try {
         const getAllUsersData = await getUsersModel.getAllUsers();
         if(!getAllUsersData){
-            res.status(404).json({success:true, error:"user not found"});
+            return res.status(404).json({success:true, error:"user not found"});
         }
-        res.json({success:true, data:getAllUsersData});
+        return res.json({success:true, data:getAllUsersData});
     } catch (error) {
-        res.status(500).json({success:false, error:"server error"});
+        return res.status(500).json({success:false, error:"server error"});
     }
 }
 
@@ -16,11 +16,11 @@ const getUsersByIdController = async(req, res) =>{
     try {
         const getUsersByIdData = await getUsersModel.getUsersById(req.params.id);
         if(!getUsersByIdData){
-            res.status(404).json({success:false, error:"user not found"});
+            return res.status(404).json({success:false, error:"user not found"});
         }
-        res.json({success:true, data:getUsersByIdData});
+        return res.json({success:true, data:getUsersByIdData});
     } catch (error) {
-        res.status(500).json({success:false, error:"server error"});
+        return res.status(500).json({success:false, error:"server error"});
     }
 };
 
@@ -32,9 +32,9 @@ const CreateUserController = async(req, res) =>{
         if(!username, !email, !password_hash){
             return res.status(400).json({success:false, error:"missing fields value"})
         }
-        res.status(201).json({success:true, message:"create new user successfully"});
+        return res.status(201).json({success:true, message:"create new user successfully"});
     } catch (error) {
-        res.status(500).json({success:false, error:"server error"});
+        return res.status(500).json({success:false, error:"server error"});
     }
 }
 
@@ -47,9 +47,9 @@ const editUsersController = async(req, res) =>{
         if(editUsersData === 0){
             return res.status(404).json({success:false, error:"User not found"})
         }
-        res.json({success:true, message:"Update the user record"});
+        return res.json({success:true, message:"Update the user record"});
     } catch (error) {
-        res.status(500).json({success:false, error:"server error"});
+        return res.status(500).json({success:false, error:"server error"});
     }
 
 };
@@ -61,9 +61,9 @@ const deleteUserController = async(req, res) =>{
        if(deleteUserData === 0){
             return res.status(404).json({success:false, error:"User not found"})
         }
-        res.json({success:true, message:"delete the user record"});
+        return res.json({success:true, message:"delete the user record"});
     } catch (error) {
-        res.status(500).json({success:false, error:"server error"}); 
+        return res.status(500).json({success:false, error:"server error"}); 
     }
 }
 

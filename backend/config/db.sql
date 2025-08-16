@@ -103,6 +103,18 @@ stock_quantity = coalesce('',stock_quantity)
 where items_id = 2;
 
 -- delete product item
-delete from product_items where items_id = 2;
+delete from product_items where items_id = 2;   
+
+-- get orders 
+select * from orders;
+
+-- get orders by id
+select * from orders where order_id = 1;
+
+-- order items
+select * from order_items;
+
+-- order items
+select * from order_items where order_id = 1;
 
 
