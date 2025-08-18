@@ -7,13 +7,18 @@ dotenv.config();
 const app = express();
 
 // Middleware
-app.use(cors());
+app.use(cors({
+  origin: ["http://localhost:5173"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  credentials: true
+}));
 app.use(express.json());
 
 // Routes
 const getUsersRoute = require('./routes/UsersRoute');
 const getProductRoute = require('./routes/ProductRoute');
 const getOrderRoute = require('./routes/OrderRoute');
+const bodyParser = require('body-parser');
 
 app.use('/api/users', getUsersRoute);
 app.use('/api/products', getProductRoute);

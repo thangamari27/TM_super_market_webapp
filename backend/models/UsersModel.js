@@ -26,19 +26,41 @@ const getUsersById = async(id)=>{
     }
 };
 
-const createUsers = async(userfields) =>{
-    try {
-        const {username, email, password_hash, phoneno, roles, user_address} = userfields;
-        const [createUsersRow] = await pool.query(
-            'INSERT INTO supermarket_users (username, email, password_hash, phoneno, roles, user_address) VALUES (?, ?, ?, ?, ?, ?)',
-            [username, email, password_hash, phoneno, roles, user_address]
-        );
+const getUserByEmail = async (email, password_hash) => {
+  try {
+    const [rows] = await pool.query(
+      "SELECT * FROM supermarket_users WHERE email = ? AND password_hash = ?",
+      [email, password_hash]
+    );
 
-        return createUsersRow.insertId;
-    } catch (error) {
-        console.log("Error:", error.message);
-    }
+   
+    return rows.length > 0 ? rows[0] : null; 
+  } catch (error) {
+    console.log("Error:", error.message);
+    return null;
+  }
 };
+
+const createUsers = async (userfields) => {
+  try {
+    const { username, email, password_hash, phoneno, roles, user_address } = userfields;
+
+    if (!username || !email || !password_hash) {
+      throw new Error("Missing required fields");
+    }
+
+    const [result] = await pool.query(
+      'INSERT INTO supermarket_users (username, email, password_hash, phoneno, roles, user_address) VALUES (?, ?, ?, ?, ?, ?)',
+      [username, email, password_hash, phoneno, roles, user_address]
+    );
+
+    return result.insertId;
+  } catch (error) {
+    console.error("DB Error:", error.message);
+    throw error; 
+  }
+};
+
 
 const editUsers = async(id, editUsersData) =>{
     try {
@@ -75,6 +97,7 @@ const deleteUsers = async(id) =>{
 module.exports = {
     getAllUsers,
     getUsersById,
+    getUserByEmail,
     createUsers,
     editUsers,
     deleteUsers

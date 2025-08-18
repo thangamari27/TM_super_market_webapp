@@ -24,19 +24,59 @@ const getUsersByIdController = async(req, res) =>{
     }
 };
 
-const CreateUserController = async(req, res) =>{
-    try {
-        const {username, email, password_hash, phoneno, roles, user_address} = req.body;
+const getUserByEmailController = async (req, res) => {
+  try {
+    const { email, password_hash } = req.body; 
 
-        const createUserData = await getUsersModel.createUsers({username, email, password_hash, phoneno, roles, user_address});
-        if(!username, !email, !password_hash){
-            return res.status(400).json({success:false, error:"missing fields value"})
-        }
-        return res.status(201).json({success:true, message:"create new user successfully"});
-    } catch (error) {
-        return res.status(500).json({success:false, error:"server error"});
+    if (!email || !password_hash) {
+      return res.status(400).json({ success: false, error: "Email and password are required" });
     }
-}
+
+    const user = await getUsersModel.getUserByEmail(email, password_hash);
+
+    if (!user) {
+      return res.status(404).json({ success: false, error: "User not found or invalid credentials" });
+    }
+
+    return res.json({
+      success: true,
+      role: user.role,
+      user
+    });
+  } catch (error) {
+    console.error("Login Error:", error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
+const CreateUserController = async (req, res) => {
+  try {
+    const { username, email, password_hash, phoneno, roles, user_address } = req.body;
+
+    if (!username || !email || !password_hash) {
+      return res.status(400).json({ success: false, error: "Missing required fields" });
+    }
+
+    const userId = await getUsersModel.createUsers({
+      username,
+      email,
+      password_hash,
+      phoneno,
+      roles,
+      user_address
+    });
+
+    return res.status(201).json({
+      success: true,
+      message: "User created successfully",
+      userId
+    });
+  } catch (error) {
+    console.error("Controller Error:", error);
+    return res.status(500).json({ success: false, error: "Server error" });
+  }
+};
+
 
 const editUsersController = async(req, res) =>{
     try {
@@ -70,6 +110,7 @@ const deleteUserController = async(req, res) =>{
 module.exports = {
     getAllUsersController,
     getUsersByIdController,
+    getUserByEmailController,
     CreateUserController,
     editUsersController,
     deleteUserController

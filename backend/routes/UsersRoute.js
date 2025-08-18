@@ -5,8 +5,11 @@ const router = express.Router();
 
 router.get('/', getUsersController.getAllUsersController);
 router.get('/:id', getUsersController.getUsersByIdController);
-router.post('/', getUsersController.CreateUserController);
 router.put('/:id', getUsersController.editUsersController);
 router.delete('/:id', getUsersController.deleteUserController);
+
+router.post('/signup', getUsersController.CreateUserController);
+router.post('/login', getUsersController.getUserByEmailController);
+
 
 module.exports = router;
