@@ -1,10 +1,9 @@
-// src/services/productService.js
 import { api } from "./api";
 
 // Get all products
 export const getProducts = async () => {
   const res = await api.get("/products");
-  return res.data.data; // since backend wraps data in { success, data }
+  return res.data.data;
 };
 
 // Get product by ID
@@ -31,6 +30,7 @@ export const deleteProduct = async (id) => {
   return res.data;
 };
 
+// ✅ Add createOrder without affecting existing code
 export const createOrder = async (orderData) => {
   const res = await api.post("/orders", orderData);
   return res.data;

@@ -6,25 +6,27 @@ const pool = require('./config/mysqlDB');
 dotenv.config();
 const app = express();
 
-// Middleware
-app.use(cors({
-  origin: ["http://localhost:5173"],
-  methods: ["GET", "POST", "PUT", "DELETE"],
-  credentials: true
-}));
-app.use(express.json());
 
-// Routes
+app.use(cors({
+    origin: [
+        "http://localhost:5173"
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"]
+}));
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true })); // for form-data if needed
+
+
 const getUsersRoute = require('./routes/UsersRoute');
 const getProductRoute = require('./routes/ProductRoute');
 const getOrderRoute = require('./routes/OrderRoute');
-const bodyParser = require('body-parser');
 
 app.use('/api/users', getUsersRoute);
 app.use('/api/products', getProductRoute);
 app.use('/api/orders', getOrderRoute);
 
-// /api/test Route
 app.get('/api/test', async (req, res) => {
     try {
         const [rows] = await pool.query('SELECT 1 AS alive');
@@ -32,6 +34,12 @@ app.get('/api/test', async (req, res) => {
     } catch (err) {
         res.status(500).json({ status: 'error', message: err.message });
     }
+});
+
+
+app.use((err, req, res, next) => {
+    console.error(err.stack);
+    res.status(500).json({ message: "Something went wrong!" });
 });
 
 

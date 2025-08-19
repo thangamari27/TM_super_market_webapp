@@ -1,0 +1,6 @@
+{
+  "client": {
+    "source": "dist",
+    "plugin": "zcatalyst-cli-plugin-react"
+  }
+}

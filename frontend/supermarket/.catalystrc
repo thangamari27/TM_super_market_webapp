@@ -1,0 +1,30 @@
+{
+  "defaults": {
+    "project": 1,
+    "env": 1
+  },
+  "actives": {
+    "project": 1,
+    "env": 1
+  },
+  "projects": [
+    {
+      "idx": 1,
+      "id": "15199000000010162",
+      "name": "supermarketapp",
+      "domain": {
+        "id": "50030419706",
+        "name": "supermarketapp-60045464861.development"
+      },
+      "timezone": "Asia/Kolkata",
+      "env": [
+        {
+          "idx": 1,
+          "id": "60045464861",
+          "name": "Development",
+          "type": 3
+        }
+      ]
+    }
+  ]
+}

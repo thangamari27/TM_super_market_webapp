@@ -30,6 +30,9 @@ const Login = () => {
             <label className="form-label">Password</label>
             <input name="password" value={form.password} onChange={handleChange} type="password" className="form-control" required />
           </div>
+          <div className='mb-3'>
+              <span>New user??</span><a href="/signup">Signup</a>
+          </div>
           <button disabled={loading} className="btn btn-primary w-100" type="submit">
             {loading ? 'Signing in...' : 'Sign In'}
           </button>

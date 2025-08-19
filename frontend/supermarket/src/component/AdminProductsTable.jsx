@@ -1,10 +1,33 @@
 // src/components/AdminProductsTable.jsx
-import React from "react";
+import React, { useState } from "react";
 import { useProducts } from "../context/ProductContext";
-import { deleteProduct } from "../services/productService";
+import { createProduct, updateProduct, deleteProduct } from "../services/productService";
+import AdminProductForm from "./AdminProductForm";
 
 const AdminProductsTable = () => {
   const { products, loading, error, fetchProducts } = useProducts();
+  const [showForm, setShowForm] = useState(false);
+  const [editData, setEditData] = useState(null);
+
+  const handleAdd = () => {
+    setEditData(null);
+    setShowForm(true);
+  };
+
+  const handleEdit = (product) => {
+    setEditData(product);
+    setShowForm(true);
+  };
+
+  const handleSubmit = async (formData) => {
+    if (editData) {
+      await updateProduct(editData.item_id, formData);
+    } else {
+      await createProduct(formData);
+    }
+    setShowForm(false);
+    fetchProducts();
+  };
 
   const handleDelete = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
@@ -20,7 +43,9 @@ const AdminProductsTable = () => {
     <div className="card shadow-sm p-3 mt-3">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h4>Manage Products</h4>
-        <button className="btn btn-success btn-sm">+ Add Product</button>
+        <button className="btn btn-success btn-sm" onClick={handleAdd}>
+          + Add Product
+        </button>
       </div>
       <table className="table table-bordered table-hover">
         <thead className="table-light">
@@ -43,7 +68,12 @@ const AdminProductsTable = () => {
                 <td>{p.stock_quantity}</td>
                 <td>{new Date(p.created_at).toLocaleDateString()}</td>
                 <td>
-                  <button className="btn btn-warning btn-sm me-2">Edit</button>
+                  <button
+                    className="btn btn-warning btn-sm me-2"
+                    onClick={() => handleEdit(p)}
+                  >
+                    Edit
+                  </button>
                   <button
                     className="btn btn-danger btn-sm"
                     onClick={() => handleDelete(p.item_id)}
@@ -62,6 +92,14 @@ const AdminProductsTable = () => {
           )}
         </tbody>
       </table>
+
+      {showForm && (
+        <AdminProductForm
+          initialData={editData}
+          onSubmit={handleSubmit}
+          onClose={() => setShowForm(false)}
+        />
+      )}
     </div>
   );
 };

@@ -57,6 +57,11 @@ const Signup = () => {
             <label className="form-label">Address</label>
             <input name="address" value={form.address} onChange={handleChange} className="form-control" />
           </div>
+
+          <div className='mb-3'>
+              <span>Already an account?? </span><a href="/">Signup</a>
+          </div>
+
           <div className="col-12">
             <button disabled={loading} className="btn btn-primary w-100" type="submit">
               {loading ? 'Signing up...' : 'Sign Up'}
